@@ -1,0 +1,172 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Definedge Pulse - AI Document Intelligence | Sourabh Shah</title>
+<meta name="description" content="Case study: Definedge Pulse, an AI document intelligence product for listed-company filings.">
+<script>try{var t=localStorage.getItem("theme");if(t)document.documentElement.setAttribute("data-theme",t);}catch(e){}</script>
+<link rel="stylesheet" href="../style.css">
+</head>
+<body>
+<header class="site-header">
+  <div class="wrap">
+    <a class="brand" href="../index.html">Sourabh Shah</a>
+    <nav class="site-nav" aria-label="Primary">
+      <a href="radar.html">Radar</a>
+      <a href="mfzone.html">MFZone</a>
+      <a href="pulse.html">Pulse</a>
+      <a href="autotrader.html">AutoTrader</a>
+      <a href="nse-terminal.html">NSE Terminal</a>
+      <button class="theme-toggle" type="button">Dark mode</button>
+    </nav>
+  </div>
+</header>
+
+<main>
+  <div class="wrap">
+    <section class="case-header">
+      <p class="kicker">Fintech &middot; AI document intelligence</p>
+      <h1>Definedge Pulse - AI Document Intelligence for Listed Companies</h1>
+      <p class="summary-line">Ingests corporate filings and produces type-aware AI summaries, extracted guidance and WhatsApp alerts, with a REST API for downstream products.</p>
+    </section>
+
+    <section aria-labelledby="context-heading">
+      <h2 id="context-heading">Problem &amp; role</h2>
+      <div class="two-col">
+        <div class="info-box">
+          <h3>Problem &amp; users</h3>
+          <p>Investors and analysts drown in corporate announcements, concall transcripts, investor presentations and annual reports. Pulse reads these documents and surfaces summaries, management guidance and forward estimates without the user opening each filing.</p>
+        </div>
+        <div class="info-box">
+          <h3>My role</h3>
+          <p>Built the product end to end: FastAPI backend, Next.js frontend, MySQL storage, Gemini-based summarization and extraction, Razorpay subscription billing, and the pytest suite and Docker deployment.</p>
+        </div>
+      </div>
+    </section>
+
+    <section aria-labelledby="arch-heading">
+      <h2 id="arch-heading">Architecture</h2>
+      <div class="diagram-wrap">
+        <svg viewBox="0 0 800 300" role="img" aria-label="Architecture diagram: announcements, concall transcripts, investor presentations and annual reports feed a FastAPI backend, which calls Google Gemini for summarization and extraction, stores results in MySQL, and serves a Next.js frontend, a REST API for downstream products, and WhatsApp alerts. Razorpay handles subscription billing.">
+          <defs>
+            <marker id="arrowhead" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto">
+              <path d="M0,0 L6,3 L0,6 Z" fill="currentColor" style="color:var(--text-muted)"></path>
+            </marker>
+          </defs>
+
+          <rect class="diagram-box" x="20" y="20" width="190" height="70" rx="8"></rect>
+          <text class="diagram-label" x="115" y="45" text-anchor="middle">Document sources</text>
+          <text class="diagram-sublabel" x="115" y="62" text-anchor="middle">announcements, transcripts,</text>
+          <text class="diagram-sublabel" x="115" y="76" text-anchor="middle">presentations, annual reports</text>
+
+          <rect class="diagram-box accent" x="300" y="20" width="200" height="70" rx="8"></rect>
+          <text class="diagram-label" x="400" y="45" text-anchor="middle">FastAPI backend</text>
+          <text class="diagram-sublabel" x="400" y="62" text-anchor="middle">summaries, guidance extraction,</text>
+          <text class="diagram-sublabel" x="400" y="76" text-anchor="middle">confidence scoring</text>
+
+          <rect class="diagram-box" x="300" y="130" width="200" height="60" rx="8"></rect>
+          <text class="diagram-label" x="400" y="155" text-anchor="middle">Google Gemini</text>
+          <text class="diagram-sublabel" x="400" y="172" text-anchor="middle">LLM summarization &amp; extraction</text>
+
+          <rect class="diagram-box accent" x="300" y="220" width="200" height="60" rx="8"></rect>
+          <text class="diagram-label" x="400" y="245" text-anchor="middle">MySQL</text>
+          <text class="diagram-sublabel" x="400" y="262" text-anchor="middle">documents, summaries, estimates</text>
+
+          <rect class="diagram-box" x="590" y="10" width="190" height="55" rx="8"></rect>
+          <text class="diagram-label" x="685" y="33" text-anchor="middle">Next.js frontend</text>
+          <text class="diagram-sublabel" x="685" y="48" text-anchor="middle">TypeScript</text>
+
+          <rect class="diagram-box" x="590" y="80" width="190" height="55" rx="8"></rect>
+          <text class="diagram-label" x="685" y="103" text-anchor="middle">REST API</text>
+          <text class="diagram-sublabel" x="685" y="118" text-anchor="middle">downstream products</text>
+
+          <rect class="diagram-box" x="590" y="150" width="190" height="55" rx="8"></rect>
+          <text class="diagram-label" x="685" y="173" text-anchor="middle">WhatsApp alerts</text>
+
+          <rect class="diagram-box" x="590" y="220" width="190" height="55" rx="8"></rect>
+          <text class="diagram-label" x="685" y="243" text-anchor="middle">Razorpay</text>
+          <text class="diagram-sublabel" x="685" y="258" text-anchor="middle">subscriptions, free-trial gating</text>
+
+          <path class="diagram-arrow" d="M210,55 L298,55"></path>
+          <path class="diagram-arrow" d="M400,90 L400,128"></path>
+          <path class="diagram-arrow" d="M400,190 L400,218"></path>
+          <path class="diagram-arrow" d="M500,40 L588,37"></path>
+          <path class="diagram-arrow" d="M500,55 L588,107"></path>
+          <path class="diagram-arrow" d="M500,70 L588,177"></path>
+          <path class="diagram-arrow" d="M500,250 L588,247"></path>
+        </svg>
+      </div>
+    </section>
+
+    <section aria-labelledby="decisions-heading">
+      <h2 id="decisions-heading">Key engineering decisions</h2>
+      <ul class="bullet-list">
+        <li>Type-aware summarization treats announcements, transcripts, presentations and annual reports as distinct pipelines rather than one generic summarizer.</li>
+        <li>Guidance and forward-estimate extraction carries a confidence score, so downstream consumers can filter on extraction reliability instead of trusting every span equally.</li>
+        <li>A REST API decouples the extraction pipeline from delivery, letting WhatsApp alerts and other downstream products consume the same structured output.</li>
+        <li>Razorpay subscriptions with free-trial gating handle access control without a separate billing system.</li>
+        <li>100+ pytest cases run against a dedicated test database to keep prompting, parsing and confidence-scoring logic regression-safe.</li>
+        <li>Docker-based deployment keeps releases reproducible across environments.</li>
+      </ul>
+    </section>
+
+    <section aria-labelledby="stack-heading">
+      <h2 id="stack-heading">Stack</h2>
+      <div class="chips">
+        <span class="chip">Python</span>
+        <span class="chip">FastAPI</span>
+        <span class="chip">Next.js</span>
+        <span class="chip">TypeScript</span>
+        <span class="chip">MySQL</span>
+        <span class="chip">Google Gemini</span>
+        <span class="chip">Razorpay</span>
+        <span class="chip">pytest</span>
+        <span class="chip">Docker</span>
+      </div>
+    </section>
+
+    <section aria-labelledby="outcomes-heading">
+      <h2 id="outcomes-heading">Outcomes &amp; scale</h2>
+      <div class="outcomes-grid">
+        <div class="outcome-card">
+          <span class="stat">100+</span>
+          <span class="stat-label">pytest cases against a dedicated test database</span>
+        </div>
+        <div class="outcome-card">
+          <span class="stat">4</span>
+          <span class="stat-label">document types ingested</span>
+        </div>
+        <div class="outcome-card">
+          <span class="stat">Docker</span>
+          <span class="stat-label">deployment</span>
+        </div>
+      </div>
+    </section>
+
+    <section aria-labelledby="ui-heading">
+      <h2 id="ui-heading">UI recreation</h2>
+      <p class="mockup-label">Illustrative recreation with fictional data</p>
+
+      <div class="mockup">
+        <h3>Document summary card</h3>
+        <div class="doc-card">
+          <div class="doc-meta">ACME LTD &middot; Q2 FY26 earnings concall transcript &middot; 2026-08-14</div>
+          <p>Management guided for 18-20% revenue growth in FY26, citing order-book visibility through Q4. Margin expansion of 80-120 bps expected from operating leverage; capex guidance held flat at INR 220 crore.</p>
+          <p><strong>Extracted guidance:</strong> Revenue growth 18-20% FY26 &middot; EBITDA margin +80-120 bps &middot; Capex INR 220 crore</p>
+          <span class="confidence"><span class="badge badge-good">High confidence</span></span>
+        </div>
+      </div>
+    </section>
+  </div>
+</main>
+
+<footer class="site-footer">
+  <div class="wrap">
+    <p><a href="../index.html">&larr; Back to all projects</a></p>
+  </div>
+</footer>
+
+<script src="../theme.js" defer></script>
+</body>
+</html>
