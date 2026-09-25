@@ -1,0 +1,174 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>AutoTrader / Algostra - Algo Trading Platform | Sourabh Shah</title>
+<meta name="description" content="Case study: AutoTrader / Algostra, an algo trading platform and strategy storefront.">
+<script>try{var t=localStorage.getItem("theme");if(t)document.documentElement.setAttribute("data-theme",t);}catch(e){}</script>
+<link rel="stylesheet" href="../style.css">
+</head>
+<body>
+<header class="site-header">
+  <div class="wrap">
+    <a class="brand" href="../index.html">Sourabh Shah</a>
+    <nav class="site-nav" aria-label="Primary">
+      <a href="radar.html">Radar</a>
+      <a href="mfzone.html">MFZone</a>
+      <a href="pulse.html">Pulse</a>
+      <a href="autotrader.html">AutoTrader</a>
+      <a href="nse-terminal.html">NSE Terminal</a>
+      <button class="theme-toggle" type="button">Dark mode</button>
+    </nav>
+  </div>
+</header>
+
+<main>
+  <div class="wrap">
+    <section class="case-header">
+      <p class="kicker">Fintech &middot; Algo trading</p>
+      <h1>AutoTrader / Algostra - Algo Trading Platform and Algorythm Storefront</h1>
+      <p class="summary-line">A strategy creation, backtesting and live-trading platform, paired with a storefront for browsing and subscribing to research-analyst strategies.</p>
+    </section>
+
+    <section aria-labelledby="context-heading">
+      <h2 id="context-heading">Problem &amp; role</h2>
+      <div class="two-col">
+        <div class="info-box">
+          <h3>Problem &amp; users</h3>
+          <p>Traders who build their own strategies need creation, intraday backtesting, live order/position tracking and P&amp;L in one place. Traders who want someone else's strategy need to browse, subscribe to and deploy a research analyst's black-box strategy safely and compliantly.</p>
+        </div>
+        <div class="info-box">
+          <h3>My role</h3>
+          <p>Own the Spring Boot backend and Vue 3 frontend for the main trading app, and the separate Vite storefront SPA, including Keycloak SSO, eSign onboarding and subscription management.</p>
+        </div>
+      </div>
+    </section>
+
+    <section aria-labelledby="arch-heading">
+      <h2 id="arch-heading">Architecture</h2>
+      <div class="diagram-wrap">
+        <svg viewBox="0 0 800 320" role="img" aria-label="Architecture diagram: a Vue 3 main app, served from the Spring Boot jar, and a separate Vite storefront single page app both talk to the Spring Boot backend, which reads and writes MySQL. Keycloak SSO handles authentication for the storefront, and the storefront lists strategies distributed in partnership with Moneycontrol.">
+          <defs>
+            <marker id="arrowhead" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto">
+              <path d="M0,0 L6,3 L0,6 Z" fill="currentColor" style="color:var(--text-muted)"></path>
+            </marker>
+          </defs>
+
+          <rect class="diagram-box" x="20" y="20" width="190" height="60" rx="8"></rect>
+          <text class="diagram-label" x="115" y="45" text-anchor="middle">Main app (Vue 3)</text>
+          <text class="diagram-sublabel" x="115" y="62" text-anchor="middle">served from Spring Boot jar</text>
+
+          <rect class="diagram-box" x="20" y="110" width="190" height="60" rx="8"></rect>
+          <text class="diagram-label" x="115" y="135" text-anchor="middle">Storefront SPA</text>
+          <text class="diagram-sublabel" x="115" y="152" text-anchor="middle">Vite, Vitest-covered</text>
+
+          <rect class="diagram-box accent" x="300" y="65" width="200" height="60" rx="8"></rect>
+          <text class="diagram-label" x="400" y="90" text-anchor="middle">Spring Boot backend</text>
+          <text class="diagram-sublabel" x="400" y="107" text-anchor="middle">strategies, orders, P&amp;L, subscriptions</text>
+
+          <rect class="diagram-box accent" x="300" y="180" width="200" height="55" rx="8"></rect>
+          <text class="diagram-label" x="400" y="203" text-anchor="middle">MySQL</text>
+          <text class="diagram-sublabel" x="400" y="218" text-anchor="middle">strategies, order book, subscriptions</text>
+
+          <rect class="diagram-box" x="590" y="20" width="190" height="55" rx="8"></rect>
+          <text class="diagram-label" x="685" y="43" text-anchor="middle">Keycloak SSO</text>
+          <text class="diagram-sublabel" x="685" y="58" text-anchor="middle">auth + eSign onboarding</text>
+
+          <rect class="diagram-box" x="590" y="100" width="190" height="55" rx="8"></rect>
+          <text class="diagram-label" x="685" y="123" text-anchor="middle">Moneycontrol</text>
+          <text class="diagram-sublabel" x="685" y="138" text-anchor="middle">storefront distribution partner</text>
+
+          <path class="diagram-arrow" d="M210,55 L298,85"></path>
+          <path class="diagram-arrow" d="M210,140 L298,110"></path>
+          <path class="diagram-arrow" d="M400,125 L400,178"></path>
+          <path class="diagram-arrow" d="M500,90 L588,50"></path>
+          <path class="diagram-arrow" d="M500,105 L588,125"></path>
+        </svg>
+      </div>
+    </section>
+
+    <section aria-labelledby="decisions-heading">
+      <h2 id="decisions-heading">Key engineering decisions</h2>
+      <ul class="bullet-list">
+        <li>The main app frontend is served straight from the Spring Boot jar, keeping the trading app a single deployable artifact.</li>
+        <li>The storefront is a separate Vite SPA, decoupling its release cadence from the authenticated trading app it sits in front of.</li>
+        <li>Keycloak SSO plus eSign onboarding gate subscription and compliance steps before a user can deploy someone else's strategy.</li>
+        <li>Subscription management includes auto-renewal, avoiding manual resubscription friction for storefront strategies.</li>
+        <li>Both frontends are type-checked with Vitest coverage despite different build setups.</li>
+      </ul>
+    </section>
+
+    <section aria-labelledby="stack-heading">
+      <h2 id="stack-heading">Stack</h2>
+      <div class="chips">
+        <span class="chip">Spring Boot</span>
+        <span class="chip">Vue 3</span>
+        <span class="chip">Vite</span>
+        <span class="chip">TypeScript</span>
+        <span class="chip">MySQL</span>
+        <span class="chip">Keycloak SSO</span>
+        <span class="chip">Vitest</span>
+        <span class="chip">Moneycontrol partnership</span>
+      </div>
+    </section>
+
+    <section aria-labelledby="outcomes-heading">
+      <h2 id="outcomes-heading">Outcomes &amp; scale</h2>
+      <div class="outcomes-grid">
+        <div class="outcome-card">
+          <span class="stat">2</span>
+          <span class="stat-label">deployable frontends: main app + storefront</span>
+        </div>
+        <div class="outcome-card">
+          <span class="stat">Keycloak + eSign</span>
+          <span class="stat-label">onboarding for strategy subscribers</span>
+        </div>
+        <div class="outcome-card">
+          <span class="stat">Auto-renewal</span>
+          <span class="stat-label">subscription management</span>
+        </div>
+      </div>
+    </section>
+
+    <section aria-labelledby="ui-heading">
+      <h2 id="ui-heading">UI recreation</h2>
+      <p class="mockup-label">Illustrative recreation with fictional data</p>
+
+      <div class="mockup">
+        <h3>Positions &amp; P&amp;L</h3>
+        <table class="mock-table">
+          <thead>
+            <tr><th>Strategy</th><th>Symbol</th><th>Qty</th><th>Avg. price</th><th>LTP</th><th>P&amp;L</th><th>Status</th></tr>
+          </thead>
+          <tbody>
+            <tr><td>Momentum Breakout</td><td>ACME LTD</td><td>150</td><td>1,802.00</td><td>1,842.50</td><td class="num-up">+6,075</td><td><span class="badge badge-good">Live</span></td></tr>
+            <tr><td>Mean Reversion NF</td><td>NORTHWIND IND</td><td>-80</td><td>618.40</td><td>612.10</td><td class="num-up">+504</td><td><span class="badge badge-good">Live</span></td></tr>
+            <tr><td>Range Scalper</td><td>BLUEPEAK FIN</td><td>60</td><td>3,320.00</td><td>3,305.00</td><td class="num-down">-900</td><td><span class="badge badge-warn">Paused</span></td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="mockup">
+        <h3>Storefront: research-analyst strategy card</h3>
+        <div class="fund-card" style="max-width:320px">
+          <h4>Quarterly Rotation - by Ananya Rao Research</h4>
+          <p>Black box &middot; Rebalanced quarterly</p>
+          <span class="ret">+22.4% (1Y backtest)</span>
+          <p style="margin-top:10px"><span class="badge badge-good">SEBI-registered analyst</span></p>
+          <button class="mock-btn" type="button" style="margin-top:10px">Subscribe</button>
+        </div>
+      </div>
+    </section>
+  </div>
+</main>
+
+<footer class="site-footer">
+  <div class="wrap">
+    <p><a href="../index.html">&larr; Back to all projects</a></p>
+  </div>
+</footer>
+
+<script src="../theme.js" defer></script>
+</body>
+</html>

@@ -1,0 +1,188 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>MFZone - Mutual Fund Platform | Sourabh Shah</title>
+<meta name="description" content="Case study: MFZone, a mutual fund discovery, analysis and order platform.">
+<script>try{var t=localStorage.getItem("theme");if(t)document.documentElement.setAttribute("data-theme",t);}catch(e){}</script>
+<link rel="stylesheet" href="../style.css">
+</head>
+<body>
+<header class="site-header">
+  <div class="wrap">
+    <a class="brand" href="../index.html">Sourabh Shah</a>
+    <nav class="site-nav" aria-label="Primary">
+      <a href="radar.html">Radar</a>
+      <a href="mfzone.html">MFZone</a>
+      <a href="pulse.html">Pulse</a>
+      <a href="autotrader.html">AutoTrader</a>
+      <a href="nse-terminal.html">NSE Terminal</a>
+      <button class="theme-toggle" type="button">Dark mode</button>
+    </nav>
+  </div>
+</header>
+
+<main>
+  <div class="wrap">
+    <section class="case-header">
+      <p class="kicker">Fintech &middot; Mutual funds</p>
+      <h1>MFZone - Simplifying Mutual Fund Analysis</h1>
+      <p class="summary-line">Discover, analyze and invest: a mutual fund platform covering fund research, comparison and order placement end to end, built from scratch.</p>
+    </section>
+
+    <section aria-labelledby="context-heading">
+      <h2 id="context-heading">Problem &amp; role</h2>
+      <div class="two-col">
+        <div class="info-box">
+          <h3>Problem &amp; users</h3>
+          <p>Investors need to discover, compare and act on mutual funds in one place, with orders that reliably reach the exchange's registered transfer channel and reconcile back into the platform.</p>
+        </div>
+        <div class="info-box">
+          <h3>My role</h3>
+          <p>Built the product from scratch end to end: database schema, Java backend API, and the Vue 3 frontend with in-house components, including the BSE StAR MF integration for order flows.</p>
+        </div>
+      </div>
+    </section>
+
+    <section aria-labelledby="arch-heading">
+      <h2 id="arch-heading">Architecture</h2>
+      <div class="diagram-wrap">
+        <svg viewBox="0 0 800 260" role="img" aria-label="Architecture diagram: a Vue 3 frontend calls a Java backend, which reads and writes MySQL and integrates with the external BSE StAR MF platform for SIP registration, order placement, order book and reconciliation.">
+          <defs>
+            <marker id="arrowhead" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto">
+              <path d="M0,0 L6,3 L0,6 Z" fill="currentColor" style="color:var(--text-muted)"></path>
+            </marker>
+          </defs>
+
+          <rect class="diagram-box" x="30" y="30" width="180" height="60" rx="8"></rect>
+          <text class="diagram-label" x="120" y="55" text-anchor="middle">Vue 3 frontend</text>
+          <text class="diagram-sublabel" x="120" y="72" text-anchor="middle">Vite, Pinia, Tailwind</text>
+
+          <rect class="diagram-box accent" x="310" y="30" width="180" height="60" rx="8"></rect>
+          <text class="diagram-label" x="400" y="55" text-anchor="middle">Java backend</text>
+          <text class="diagram-sublabel" x="400" y="72" text-anchor="middle">fund data, orders, validation</text>
+
+          <rect class="diagram-box accent" x="310" y="150" width="180" height="60" rx="8"></rect>
+          <text class="diagram-label" x="400" y="175" text-anchor="middle">MySQL</text>
+          <text class="diagram-sublabel" x="400" y="192" text-anchor="middle">funds, holdings, order book</text>
+
+          <rect class="diagram-box" x="590" y="30" width="180" height="60" rx="8"></rect>
+          <text class="diagram-label" x="680" y="50" text-anchor="middle">BSE StAR MF</text>
+          <text class="diagram-sublabel" x="680" y="67" text-anchor="middle">SIP, lump sum, order book,</text>
+          <text class="diagram-sublabel" x="680" y="80" text-anchor="middle">reconciliation, cancellation</text>
+
+          <path class="diagram-arrow" d="M210,60 L308,60"></path>
+          <path class="diagram-arrow" d="M400,90 L400,148"></path>
+          <path class="diagram-arrow" d="M490,60 L588,60"></path>
+        </svg>
+      </div>
+    </section>
+
+    <section aria-labelledby="decisions-heading">
+      <h2 id="decisions-heading">Key engineering decisions</h2>
+      <ul class="bullet-list">
+        <li>Owned the schema, API and UI together end to end, keeping data contracts consistent across all three layers instead of integrating against an existing backend.</li>
+        <li>Treated SIP registration, lump-sum orders, order book, reconciliation and cancellation as distinct first-class flows against BSE StAR MF, not a single generic "place order" call.</li>
+        <li>Frontend validations on order placement catch invalid input before it reaches the exchange integration.</li>
+        <li>Fund comparison and current-holdings views were built as reusable in-house Vue components shared across discovery and analysis screens.</li>
+      </ul>
+    </section>
+
+    <section aria-labelledby="stack-heading">
+      <h2 id="stack-heading">Stack</h2>
+      <div class="chips">
+        <span class="chip">Vue 3</span>
+        <span class="chip">Vite</span>
+        <span class="chip">TypeScript</span>
+        <span class="chip">Pinia</span>
+        <span class="chip">Tailwind CSS</span>
+        <span class="chip">Java</span>
+        <span class="chip">MySQL</span>
+        <span class="chip">BSE StAR MF</span>
+      </div>
+    </section>
+
+    <section aria-labelledby="outcomes-heading">
+      <h2 id="outcomes-heading">Outcomes &amp; scale</h2>
+      <div class="outcomes-grid">
+        <div class="outcome-card">
+          <span class="stat">BSE StAR MF</span>
+          <span class="stat-label">order routing &amp; reconciliation partner</span>
+        </div>
+        <div class="outcome-card">
+          <span class="stat">SIP + lump sum</span>
+          <span class="stat-label">order types supported</span>
+        </div>
+        <div class="outcome-card">
+          <span class="stat">End to end</span>
+          <span class="stat-label">database to API to UI ownership</span>
+        </div>
+      </div>
+    </section>
+
+    <section aria-labelledby="ui-heading">
+      <h2 id="ui-heading">UI recreation</h2>
+      <p class="mockup-label">Illustrative recreation with fictional data</p>
+
+      <div class="mockup">
+        <h3>Fund comparison</h3>
+        <div class="fund-cards">
+          <div class="fund-card">
+            <h4>ACME Bluechip Growth Fund</h4>
+            <p>Large cap &middot; Equity</p>
+            <span class="ret">+14.2% (3Y CAGR)</span>
+          </div>
+          <div class="fund-card">
+            <h4>Northwind Flexi Cap Fund</h4>
+            <p>Flexi cap &middot; Equity</p>
+            <span class="ret">+16.8% (3Y CAGR)</span>
+          </div>
+          <div class="fund-card">
+            <h4>Silverline Short Duration Fund</h4>
+            <p>Short duration &middot; Debt</p>
+            <span class="ret">+7.1% (3Y CAGR)</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="mockup">
+        <h3>SIP order form</h3>
+        <form class="mock-form" onsubmit="return false">
+          <div>
+            <label for="mf-fund">Fund</label>
+            <select id="mf-fund">
+              <option>ACME Bluechip Growth Fund</option>
+              <option>Northwind Flexi Cap Fund</option>
+            </select>
+          </div>
+          <div>
+            <label for="mf-amount">Monthly amount (INR)</label>
+            <input id="mf-amount" type="text" value="5,000">
+          </div>
+          <div>
+            <label for="mf-date">SIP date</label>
+            <select id="mf-date">
+              <option>1st</option>
+              <option>10th</option>
+              <option>20th</option>
+            </select>
+          </div>
+          <div style="align-self:end">
+            <button class="mock-btn" type="button">Start SIP</button>
+          </div>
+        </form>
+      </div>
+    </section>
+  </div>
+</main>
+
+<footer class="site-footer">
+  <div class="wrap">
+    <p><a href="../index.html">&larr; Back to all projects</a></p>
+  </div>
+</footer>
+
+<script src="../theme.js" defer></script>
+</body>
+</html>

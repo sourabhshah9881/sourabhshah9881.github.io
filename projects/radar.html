@@ -1,0 +1,217 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Radar - Fundamental Screener | Sourabh Shah</title>
+<meta name="description" content="Case study: Radar, a fundamental analysis and stock screening platform for Indian equities.">
+<script>try{var t=localStorage.getItem("theme");if(t)document.documentElement.setAttribute("data-theme",t);}catch(e){}</script>
+<link rel="stylesheet" href="../style.css">
+</head>
+<body>
+<header class="site-header">
+  <div class="wrap">
+    <a class="brand" href="../index.html">Sourabh Shah</a>
+    <nav class="site-nav" aria-label="Primary">
+      <a href="radar.html">Radar</a>
+      <a href="mfzone.html">MFZone</a>
+      <a href="pulse.html">Pulse</a>
+      <a href="autotrader.html">AutoTrader</a>
+      <a href="nse-terminal.html">NSE Terminal</a>
+      <button class="theme-toggle" type="button">Dark mode</button>
+    </nav>
+  </div>
+</header>
+
+<main>
+  <div class="wrap">
+    <section class="case-header">
+      <p class="kicker">Fintech &middot; Fundamental analysis</p>
+      <h1>Radar - Fundamental Analysis &amp; Stock Scanner</h1>
+      <p class="summary-line">A dynamic fundamental screener and scoring platform for Indian equities, built from scratch and run in production since December 2021. Live at <a href="https://radar.definedgesecurities.com" rel="noopener">radar.definedgesecurities.com</a>.</p>
+    </section>
+
+    <section aria-labelledby="context-heading">
+      <h2 id="context-heading">Problem &amp; role</h2>
+      <div class="two-col">
+        <div class="info-box">
+          <h3>Problem &amp; users</h3>
+          <p>Retail and semi-professional equity investors need to filter thousands of listed companies by fundamentals (valuation, growth, health, dividends, ownership) and verify an idea's history before acting on it, without building spreadsheets by hand.</p>
+        </div>
+        <div class="info-box">
+          <h3>My role</h3>
+          <p>Built and own the product end to end since inception: system architecture, the Vue 3 frontend, the Spring Boot/JPA backend, MySQL schema and Flyway migrations, the daily data pipeline, and UAT/production releases via Jenkins.</p>
+        </div>
+      </div>
+    </section>
+
+    <section aria-labelledby="arch-heading">
+      <h2 id="arch-heading">Architecture</h2>
+      <div class="diagram-wrap">
+        <svg viewBox="0 0 800 320" role="img" aria-label="Architecture diagram: an SFTP fundamentals feed lands in a MySQL database via a daily pipeline; a Spring Boot and JPA backend reads and writes that database and serves both the Vue 3 frontend and an external partner API over API-key authorization.">
+          <defs>
+            <marker id="arrowhead" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto">
+              <path d="M0,0 L6,3 L0,6 Z" fill="currentColor" style="color:var(--text-muted)"></path>
+            </marker>
+          </defs>
+
+          <rect class="diagram-box" x="30" y="30" width="160" height="60" rx="8"></rect>
+          <text class="diagram-label" x="110" y="55" text-anchor="middle">SFTP feed</text>
+          <text class="diagram-sublabel" x="110" y="72" text-anchor="middle">daily fundamentals data</text>
+
+          <rect class="diagram-box" x="30" y="230" width="160" height="74" rx="8"></rect>
+          <text class="diagram-label" x="110" y="253" text-anchor="middle">Data pipeline</text>
+          <text class="diagram-sublabel" x="110" y="269" text-anchor="middle">per-date commits,</text>
+          <text class="diagram-sublabel" x="110" y="283" text-anchor="middle">ratio recompute</text>
+
+          <rect class="diagram-box accent" x="310" y="130" width="180" height="60" rx="8"></rect>
+          <text class="diagram-label" x="400" y="155" text-anchor="middle">MySQL</text>
+          <text class="diagram-sublabel" x="400" y="172" text-anchor="middle">Flyway-managed schema</text>
+
+          <rect class="diagram-box accent" x="310" y="30" width="180" height="60" rx="8"></rect>
+          <text class="diagram-label" x="400" y="55" text-anchor="middle">Spring Boot / JPA backend</text>
+          <text class="diagram-sublabel" x="400" y="72" text-anchor="middle">screener, scoring, backtesting</text>
+
+          <rect class="diagram-box" x="590" y="30" width="180" height="60" rx="8"></rect>
+          <text class="diagram-label" x="680" y="55" text-anchor="middle">Vue 3 frontend</text>
+          <text class="diagram-sublabel" x="680" y="72" text-anchor="middle">Vite, Pinia, Tailwind</text>
+
+          <rect class="diagram-box" x="590" y="130" width="180" height="60" rx="8"></rect>
+          <text class="diagram-label" x="680" y="155" text-anchor="middle">Partner API</text>
+          <text class="diagram-sublabel" x="680" y="172" text-anchor="middle">API-key authorization</text>
+
+          <path class="diagram-arrow" d="M110,90 L110,230"></path>
+          <path class="diagram-arrow" d="M190,267 C260,267 260,160 308,160"></path>
+          <path class="diagram-arrow" d="M400,130 L400,92"></path>
+          <path class="diagram-arrow" d="M490,55 L588,55"></path>
+          <path class="diagram-arrow" d="M490,150 C540,150 540,150 588,150"></path>
+        </svg>
+      </div>
+    </section>
+
+    <section aria-labelledby="decisions-heading">
+      <h2 id="decisions-heading">Key engineering decisions</h2>
+      <ul class="bullet-list">
+        <li>Composite scoring across five axes (value, growth, health, dividend, ownership) so a screener result reduces to a comparable score instead of raw parameters.</li>
+        <li>A cached point-in-time fundamentals store lets any saved scanner be backtested by date or symbol list without recomputing historical ratios on the fly.</li>
+        <li>The daily SFTP-to-MySQL pipeline commits per date with derived-ratio recomputation, so a bad or partial day cannot corrupt the rest of the store.</li>
+        <li>Scanners are expressions (arithmetic and logical) over 1,300+ parameters, saved and shareable rather than hard-coded filters.</li>
+        <li>Partner data-feed access is a separate API-key-authorized surface from the authenticated web app, keeping the two consumer types decoupled.</li>
+        <li>JUnit 5 suites run expression evaluation against an in-memory database for speed, with a separate integration suite against a dedicated test database.</li>
+      </ul>
+    </section>
+
+    <section aria-labelledby="stack-heading">
+      <h2 id="stack-heading">Stack</h2>
+      <div class="chips">
+        <span class="chip">Vue 3</span>
+        <span class="chip">Vite</span>
+        <span class="chip">TypeScript</span>
+        <span class="chip">Pinia</span>
+        <span class="chip">Tailwind CSS</span>
+        <span class="chip">Spring Boot</span>
+        <span class="chip">Spring Data JPA</span>
+        <span class="chip">MySQL</span>
+        <span class="chip">Flyway</span>
+        <span class="chip">Highcharts</span>
+        <span class="chip">amCharts 5</span>
+        <span class="chip">JUnit 5</span>
+      </div>
+    </section>
+
+    <section aria-labelledby="outcomes-heading">
+      <h2 id="outcomes-heading">Outcomes &amp; scale</h2>
+      <div class="outcomes-grid">
+        <div class="outcome-card">
+          <span class="stat">1,300+</span>
+          <span class="stat-label">fundamental parameters covered</span>
+        </div>
+        <div class="outcome-card">
+          <span class="stat">12/2021</span>
+          <span class="stat-label">live in production since</span>
+        </div>
+        <div class="outcome-card">
+          <span class="stat">5</span>
+          <span class="stat-label">composite scoring axes</span>
+        </div>
+        <div class="outcome-card">
+          <span class="stat">Daily</span>
+          <span class="stat-label">SFTP fundamentals pipeline cadence</span>
+        </div>
+      </div>
+    </section>
+
+    <section aria-labelledby="ui-heading">
+      <h2 id="ui-heading">UI recreation</h2>
+      <p class="mockup-label">Illustrative recreation with fictional data</p>
+
+      <div data-tabs>
+        <div class="tabs">
+          <button class="tab-btn active" type="button" data-tab-target="screener">Screener</button>
+          <button class="tab-btn" type="button" data-tab-target="scoring">Scoring</button>
+          <button class="tab-btn" type="button" data-tab-target="backtest">Backtest</button>
+        </div>
+
+        <div class="tab-panel active" data-tab="screener">
+          <div class="mockup">
+            <h3>Condition builder</h3>
+            <div class="mockup-toolbar">
+              <span class="pill">ROE &gt; 15%</span>
+              <span class="pill">AND</span>
+              <span class="pill">Debt/Equity &lt; 0.5</span>
+              <span class="pill">AND</span>
+              <span class="pill">PEG &lt; 1.2</span>
+              <span class="pill">+ Add condition</span>
+            </div>
+            <table class="mock-table">
+              <thead>
+                <tr><th>Symbol</th><th>Price</th><th>Chg %</th><th>ROE</th><th>D/E</th><th>PEG</th><th>Sector</th></tr>
+              </thead>
+              <tbody>
+                <tr><td>ACME LTD</td><td>1,842.50</td><td class="num-up">+1.8%</td><td>21.4%</td><td>0.31</td><td>0.94</td><td>Industrials</td></tr>
+                <tr><td>NORTHWIND IND</td><td>612.10</td><td class="num-down">-0.6%</td><td>18.9%</td><td>0.22</td><td>1.05</td><td>Chemicals</td></tr>
+                <tr><td>BLUEPEAK FIN</td><td>3,305.00</td><td class="num-up">+2.4%</td><td>24.1%</td><td>0.44</td><td>1.10</td><td>Financials</td></tr>
+                <tr><td>SILVERLINE TECH</td><td>988.75</td><td class="num-up">+0.9%</td><td>19.7%</td><td>0.15</td><td>0.87</td><td>Technology</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <div class="tab-panel" data-tab="scoring">
+          <div class="mockup">
+            <h3>ACME LTD - composite score</h3>
+            <div class="axis-bars">
+              <div class="axis-row"><span>Value</span><span class="axis-track"><span class="axis-fill" style="width:72%"></span></span><span>72</span></div>
+              <div class="axis-row"><span>Growth</span><span class="axis-track"><span class="axis-fill" style="width:85%"></span></span><span>85</span></div>
+              <div class="axis-row"><span>Health</span><span class="axis-track"><span class="axis-fill" style="width:64%"></span></span><span>64</span></div>
+              <div class="axis-row"><span>Dividend</span><span class="axis-track"><span class="axis-fill" style="width:40%"></span></span><span>40</span></div>
+              <div class="axis-row"><span>Ownership</span><span class="axis-track"><span class="axis-fill" style="width:58%"></span></span><span>58</span></div>
+            </div>
+          </div>
+        </div>
+
+        <div class="tab-panel" data-tab="backtest">
+          <div class="mockup">
+            <h3>Backtest: "High ROE, low leverage" scanner, 2021-01-01 to 2025-12-31</h3>
+            <div class="backtest-strip">
+              <div class="stat-tile"><span class="v num-up">+184%</span><span class="l">Cumulative return</span></div>
+              <div class="stat-tile"><span class="v">41</span><span class="l">Avg. matches per run</span></div>
+              <div class="stat-tile"><span class="v">62%</span><span class="l">Hit rate (1Y fwd)</span></div>
+              <div class="stat-tile"><span class="v num-down">-28%</span><span class="l">Max drawdown</span></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+  </div>
+</main>
+
+<footer class="site-footer">
+  <div class="wrap">
+    <p><a href="../index.html">&larr; Back to all projects</a></p>
+  </div>
+</footer>
+
+<script src="../theme.js" defer></script>
+</body>
+</html>

@@ -1,0 +1,176 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>NSE Algo-Trading Terminal | Sourabh Shah</title>
+<meta name="description" content="Case study: NSE Algo-Trading Terminal, a personal Pine Script to Python trading system.">
+<script>try{var t=localStorage.getItem("theme");if(t)document.documentElement.setAttribute("data-theme",t);}catch(e){}</script>
+<link rel="stylesheet" href="../style.css">
+</head>
+<body>
+<header class="site-header">
+  <div class="wrap">
+    <a class="brand" href="../index.html">Sourabh Shah</a>
+    <nav class="site-nav" aria-label="Primary">
+      <a href="radar.html">Radar</a>
+      <a href="mfzone.html">MFZone</a>
+      <a href="pulse.html">Pulse</a>
+      <a href="autotrader.html">AutoTrader</a>
+      <a href="nse-terminal.html">NSE Terminal</a>
+      <button class="theme-toggle" type="button">Dark mode</button>
+    </nav>
+  </div>
+</header>
+
+<main>
+  <div class="wrap">
+    <section class="case-header">
+      <p class="kicker">Personal project &middot; Algo trading</p>
+      <h1>NSE Algo-Trading Terminal</h1>
+      <p class="summary-line">A personal Pine Script to Python strategy converter with backtesting, a near-entry scanner, paper trading and gated live order execution.</p>
+    </section>
+
+    <section aria-labelledby="context-heading">
+      <h2 id="context-heading">Problem &amp; role</h2>
+      <div class="two-col">
+        <div class="info-box">
+          <h3>Problem &amp; users</h3>
+          <p>I write and test strategies in Pine Script (TradingView's charting DSL), but wanted to run them against Cassandra-backed historical and live data, paper trade them, and only then let them place real orders. Built for personal use as a self-contained terminal.</p>
+        </div>
+        <div class="info-box">
+          <h3>My role</h3>
+          <p>Solo project: the Pine Script to Python converter, the modular bot engine, the Cassandra data layer, the live websocket feed integration, and the monitoring/control web UI.</p>
+        </div>
+      </div>
+    </section>
+
+    <section aria-labelledby="arch-heading">
+      <h2 id="arch-heading">Architecture</h2>
+      <div class="diagram-wrap">
+        <svg viewBox="0 0 800 300" role="img" aria-label="Architecture diagram: Pine Script strategies pass through a converter into a modular Python bot engine. Cassandra supplies end-of-day and intraday data, and a live broker websocket feed supplies real-time ticks. The bot engine drives backtesting, a near-entry scanner, paper trading and gated live order execution, all monitored through a web UI.">
+          <defs>
+            <marker id="arrowhead" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto">
+              <path d="M0,0 L6,3 L0,6 Z" fill="currentColor" style="color:var(--text-muted)"></path>
+            </marker>
+          </defs>
+
+          <rect class="diagram-box" x="20" y="20" width="170" height="55" rx="8"></rect>
+          <text class="diagram-label" x="105" y="43" text-anchor="middle">Pine Script</text>
+          <text class="diagram-sublabel" x="105" y="58" text-anchor="middle">strategy source</text>
+
+          <rect class="diagram-box" x="20" y="110" width="170" height="55" rx="8"></rect>
+          <text class="diagram-label" x="105" y="133" text-anchor="middle">Cassandra</text>
+          <text class="diagram-sublabel" x="105" y="148" text-anchor="middle">EOD + intraday data</text>
+
+          <rect class="diagram-box" x="20" y="200" width="170" height="55" rx="8"></rect>
+          <text class="diagram-label" x="105" y="223" text-anchor="middle">Live broker</text>
+          <text class="diagram-sublabel" x="105" y="238" text-anchor="middle">websocket feed</text>
+
+          <rect class="diagram-box accent" x="300" y="110" width="200" height="60" rx="8"></rect>
+          <text class="diagram-label" x="400" y="135" text-anchor="middle">Python bot engine</text>
+          <text class="diagram-sublabel" x="400" y="152" text-anchor="middle">modular, strategy-agnostic</text>
+
+          <rect class="diagram-box" x="590" y="20" width="190" height="50" rx="8"></rect>
+          <text class="diagram-label" x="685" y="50" text-anchor="middle">Backtester</text>
+
+          <rect class="diagram-box" x="590" y="80" width="190" height="50" rx="8"></rect>
+          <text class="diagram-label" x="685" y="110" text-anchor="middle">Near-entry scanner</text>
+
+          <rect class="diagram-box" x="590" y="140" width="190" height="50" rx="8"></rect>
+          <text class="diagram-label" x="685" y="170" text-anchor="middle">Paper trading</text>
+
+          <rect class="diagram-box" x="590" y="200" width="190" height="50" rx="8"></rect>
+          <text class="diagram-label" x="685" y="225" text-anchor="middle">Gated live execution</text>
+
+          <rect class="diagram-box" x="300" y="220" width="200" height="50" rx="8"></rect>
+          <text class="diagram-label" x="400" y="250" text-anchor="middle">Web UI (monitor &amp; control)</text>
+
+          <path class="diagram-arrow" d="M190,50 C240,50 240,120 298,130"></path>
+          <path class="diagram-arrow" d="M190,138 L298,138"></path>
+          <path class="diagram-arrow" d="M190,228 C240,228 240,160 298,150"></path>
+          <path class="diagram-arrow" d="M500,120 L588,45"></path>
+          <path class="diagram-arrow" d="M500,130 L588,105"></path>
+          <path class="diagram-arrow" d="M500,145 L588,160"></path>
+          <path class="diagram-arrow" d="M500,160 L588,215"></path>
+          <path class="diagram-arrow" d="M400,170 L400,218"></path>
+        </svg>
+      </div>
+    </section>
+
+    <section aria-labelledby="decisions-heading">
+      <h2 id="decisions-heading">Key engineering decisions</h2>
+      <ul class="bullet-list">
+        <li>A Pine Script to Python converter lets strategies be authored in TradingView's charting DSL and still run through one Python engine for backtests, scanning and live execution.</li>
+        <li>Live order execution is explicitly gated behind paper trading, so an untested strategy cannot place a real order.</li>
+        <li>Cassandra backs both end-of-day and intraday data, chosen for high-throughput time-series writes off a live websocket feed.</li>
+        <li>The bot engine is modular: data ingestion, signal generation and execution are separated so strategies can be swapped independently.</li>
+        <li>A web UI for monitoring and control runs decoupled from the bot engine's own process.</li>
+      </ul>
+    </section>
+
+    <section aria-labelledby="stack-heading">
+      <h2 id="stack-heading">Stack</h2>
+      <div class="chips">
+        <span class="chip">Python</span>
+        <span class="chip">Pine Script</span>
+        <span class="chip">Cassandra</span>
+        <span class="chip">WebSocket</span>
+      </div>
+    </section>
+
+    <section aria-labelledby="outcomes-heading">
+      <h2 id="outcomes-heading">Outcomes &amp; scale</h2>
+      <div class="outcomes-grid">
+        <div class="outcome-card">
+          <span class="stat">Pine Script &rarr; Python</span>
+          <span class="stat-label">strategy conversion</span>
+        </div>
+        <div class="outcome-card">
+          <span class="stat">EOD + intraday</span>
+          <span class="stat-label">Cassandra-fed market data</span>
+        </div>
+        <div class="outcome-card">
+          <span class="stat">Paper &rarr; live</span>
+          <span class="stat-label">gated execution path</span>
+        </div>
+      </div>
+    </section>
+
+    <section aria-labelledby="ui-heading">
+      <h2 id="ui-heading">UI recreation</h2>
+      <p class="mockup-label">Illustrative recreation with fictional data</p>
+
+      <div class="mockup">
+        <h3>Near-entry scanner</h3>
+        <table class="mock-table">
+          <thead>
+            <tr><th>Symbol</th><th>Strategy</th><th>LTP</th><th>Entry trigger</th><th>Distance</th></tr>
+          </thead>
+          <tbody>
+            <tr><td>ACME LTD</td><td>Momentum Breakout</td><td>1,842.50</td><td>1,850.00</td><td>0.4%</td></tr>
+            <tr><td>NORTHWIND IND</td><td>Mean Reversion</td><td>612.10</td><td>608.00</td><td>0.7%</td></tr>
+            <tr><td>SILVERLINE TECH</td><td>Range Scalper</td><td>988.75</td><td>992.00</td><td>0.3%</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="mockup">
+        <h3>Paper-trade log</h3>
+        <div class="log-row"><span>09:21:04 &middot; ACME LTD</span><span>BUY 50 @ 1,838.20</span><span class="badge badge-good">Filled (paper)</span></div>
+        <div class="log-row"><span>10:02:17 &middot; NORTHWIND IND</span><span>SELL 30 @ 615.40</span><span class="badge badge-good">Filled (paper)</span></div>
+        <div class="log-row"><span>11:47:52 &middot; SILVERLINE TECH</span><span>BUY 20 @ 985.10</span><span class="badge badge-warn">Pending (paper)</span></div>
+      </div>
+    </section>
+  </div>
+</main>
+
+<footer class="site-footer">
+  <div class="wrap">
+    <p><a href="../index.html">&larr; Back to all projects</a></p>
+  </div>
+</footer>
+
+<script src="../theme.js" defer></script>
+</body>
+</html>
